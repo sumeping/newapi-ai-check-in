@@ -1,19 +1,9 @@
-name: newapi.ai 自动签到
+name: qaq.al 自动签到
 on:
   schedule:
     - cron: '0 */8 * * *'
   workflow_dispatch:
     inputs:
-      accounts:
-        description: '账号配置 (JSON 格式，可选，不填则使用 secrets.ACCOUNTS)'
-        required: false
-        type: string
-        default: ''
-      providers:
-        description: '自定义 Provider 配置 (JSON 格式，可选，不填则使用 secrets.PROVIDERS)'
-        required: false
-        type: string
-        default: ''
       debug:
         description: '调试模式 (启用后会保存截图和 HTML 日志)'
         required: false
@@ -85,31 +75,20 @@ jobs:
         uv run camoufox fetch
         echo "✅ Camoufox 浏览器安装完成"
 
-    - name: 恢复登录状态缓存
-      uses: actions/cache/restore@v4
-      with:
-        path: |
-          storage-states
-        key: storage-state-${{ hashFiles('storage-states/*.json') }}
-        restore-keys: |
-          storage-state-
-
     - name: 恢复余额历史缓存
       uses: actions/cache/restore@v4
       with:
         path: |
-          balance_hash.txt
-        key: balance-hash-${{ hashFiles('balance_hash.txt') }}
+          balance_hash_qaq_al.txt
+        key: balance-hash-qaq-al-${{ hashFiles('balance_hash_qaq_al.txt') }}
         restore-keys: |
-          balance-hash-
-            
+          balance-hash-qaq-al-
+
     - name: 执行签到
       env:
-        ACCOUNTS: ${{ inputs.accounts || secrets.ACCOUNTS }}
-        ACCOUNTS_LINUX_DO: ${{ secrets.ACCOUNTS_LINUX_DO }}
-        ACCOUNTS_GITHUB: ${{ secrets.ACCOUNTS_GITHUB }}
-        PROVIDERS: ${{ inputs.providers || secrets.PROVIDERS }}
-        PROXY: ${{secrets.PROXY}}
+        ACCOUNTS_QAQ_AL: ${{ secrets.ACCOUNTS_QAQ_AL }}
+        PROXY: ${{ secrets.PROXY_QAQ_AL }}
+        QAQ_AL_TIER: ${{ vars.QAQ_AL_TIER || '4' }}
         DEBUG: ${{ github.event_name == 'workflow_dispatch' && inputs.debug || vars.DEBUG || 'false' }}
         DINGDING_WEBHOOK: ${{ secrets.DINGDING_WEBHOOK }}
         EMAIL_USER: ${{ secrets.EMAIL_USER }}
@@ -120,47 +99,23 @@ jobs:
         SERVERPUSHKEY: ${{ secrets.SERVERPUSHKEY }}
         FEISHU_WEBHOOK: ${{ secrets.FEISHU_WEBHOOK }}
         WEIXIN_WEBHOOK: ${{ secrets.WEIXIN_WEBHOOK }}
-        TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-        TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
       run: |
-        # 列出 storage-states 目录文件
-        if (Test-Path "storage-states") {
-          echo "📁 storage-states 目录内容:"
-          echo "绝对路径: $(Resolve-Path storage-states)"
-          echo ""
-          echo "所有文件:"
-          Get-ChildItem -Path storage-states -File | ForEach-Object { echo "  - $($_.Name)" }
-          echo ""
-          echo "详细信息:"
-          Get-ChildItem -Path storage-states -File | Format-Table Name, Length, LastWriteTime -AutoSize
-          echo "文件总数: $((Get-ChildItem -Path storage-states -File).Count)"
-        } else {
-          echo "⚠️ storage-states 目录不存在"
-        }
         # 执行签到
-        uv run python -u main.py
-
-    - name: 保存登录状态缓存
-      if: hashFiles('storage-states/*.json') != ''
-      uses: actions/cache/save@v4
-      with:
-        path: |
-          storage-states
-        key: storage-state-${{ hashFiles('storage-states/*.json') }}
+        uv run python -u checkin_qaq_al/main.py
 
     - name: 保存余额历史缓存
-      if: hashFiles('balance_hash.txt') != ''
+      if: hashFiles('balance_hash_qaq_al.txt') != ''
       uses: actions/cache/save@v4
       with:
         path: |
-          balance_hash.txt
-        key: balance-hash-${{ hashFiles('balance_hash.txt') }}
+          balance_hash_qaq_al.txt
+        key: balance-hash-qaq-al-${{ hashFiles('balance_hash_qaq_al.txt') }}
 
     - name: 保存日志
       if: always()
       uses: actions/upload-artifact@v4
       with:
-        name: artifacts-${{ github.run_number }}
+        name: qaq-al-artifacts-${{ github.run_number }}
         path: |
           logs/
           screenshots/
@@ -170,5 +125,5 @@ jobs:
     - name: 执行结果
       if: always()
       run: |
-        echo "签到任务执行完成"
+        echo "qaq.al 签到任务执行完成"
         echo "时间: $(Get-Date)"

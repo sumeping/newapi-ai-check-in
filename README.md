@@ -4,17 +4,12 @@
 
 Affs:
 - [AnyRouter](https://anyrouter.top/register?aff=wJrb)
-- [AgentRouter](https://agentrouter.org/register?aff=wDU2)
 - [WONG](https://wzw.pp.ua/register?aff=N6Q9)
 - [薄荷 API](https://x666.me/register?aff=dgzt)
 - [Huan API](https://ai.huan666.de/register?aff=qEnU)
-- [我爱996](https://529961.com/register?aff=HV76)
-- [莹のAPI](https://api.wpgzs.top/register?aff=56zr)
 - [KFC API](https://kfc-api.sxxe.net/register?aff=xPnf)
-- [B4U](https://b4u.qzz.io/register?aff=2NeT)
+- [HotaruApi](https://hotaruapi.com/register?aff=q6xq)
 - [Elysiver](https://elysiver.h-e.top/register?aff=5JsA)
-- [HotaruApi](https://api.hotaruapi.top/register?aff=q6xq)
-- [Neb](https://ai.zzhdsgsss.xyz/register?aff=tXKw)
 
 其它使用 `newapi.ai` 功能相似, 可自定义环境变量 `PROVIDERS` 支持或 `PR` 到仓库。
 
@@ -41,6 +36,22 @@ Affs:
 5. 点击 "Add environment secret" 创建 secret：
    - Name: `ACCOUNTS`
    - Value: 你的多账号配置数据
+
+#### 2.0 快速生成 JSON（推荐）
+
+仓库根目录提供了一个纯 HTML 生成器：`secret-json-generator.html`。
+
+使用方式：
+
+1. 在本地直接双击打开 `secret-json-generator.html`（或拖进浏览器）
+2. 选择要生成的 secret（如 `ACCOUNTS`、`ACCOUNTS_996`、`ACCOUNTS_QAQ_AL`、`PROXY`、`PROVIDERS`）
+3. 按页面提示填入参数并点击「产出 JSON」
+4. 复制结果，粘贴到 GitHub -> Settings -> Environments -> `production` -> Environment secrets 的 Value
+
+说明：
+- 生成器只在浏览器本地运行，不会上传你的账号或密码。
+- `PROXY` 类型产出的 JSON 可用于 `PROXY`、`PROXY_996`、`PROXY_QAQ_AL`。
+- `ACCOUNTS_LINUX_DO` 与 `ACCOUNTS_GITHUB` 使用相同 JSON 数组格式（`[{"username":"...","password":"..."}]`）。
 
 #### 2.1 全局 OAuth 账号配置（可选）
 
@@ -119,12 +130,12 @@ Affs:
         "password": "mypass"
       },
       // --- 额外的配置说明 ---
-      // 当前账号使用代理 
+      // 当前账号使用代理
       "proxy": {
         "server": "http://username:password@proxy.example.com:8080"
       },
-      //provider: x666 必须配置
-      "access_token": "来自 https://qd.x666.me/",
+      //provider: x666 可选配置（自动通过 linux.do 登录获取）
+      // "access_token": "来自 https://qd.x666.me/",  // 已废弃，会自动获取
       "get_cdk_cookies": {
         // provider: runawaytime 必须配置
         "session": "来自 https://fuli.hxi.me/",
@@ -152,7 +163,7 @@ Affs:
 #### 3.3 字段说明：
 
 - `name` (可选)：自定义账号显示名称，用于通知和日志中标识账号
-- `provider` (可选)：供应商，内置 `anyrouter`、`agentrouter`、`wong`、`huan666`、`x666`、`runawaytime`、`kfc`、`neb`、`elysiver`、`hotaru`、`b4u`、`lightllm`、`takeapi`、`thatapi`、`duckcoding`、`free-duckcoding`、`taizi`、`openai-test`、`icat`、`chengtx`，默认使用 `anyrouter`
+- `provider` (可选)：供应商，内置 `anyrouter`、`agentrouter`、`wong`、`huan666`、`x666`、`runawaytime`、`kfc`、`neb`、`elysiver`、`hotaru`、`b4u`、`lightllm`、`takeapi`、`thatapi`、`duckcoding`、`free-duckcoding`、`taizi`、`openai-test`、`chengtx`，默认使用 `anyrouter`
 - `proxy` (可选)：单个账号代理配置，支持 `http`、`socks5` 代理
 - `cookies`(可选)：用于身份验证的 cookies 数据
 - `api_user`(cookies 设置时必需)：用于请求头的 new-api-user 参数
@@ -170,7 +181,7 @@ Affs:
 在仓库的 Settings -> Environments -> production -> Environment secrets 中添加：
    - Name: `PROVIDERS`
    - Value: 供应商
-   - 说明: 自定义的 provider 会自动添加到账号中执行（在账号配置中没有使用自定义 provider 情况下）。
+   - 说明: 自定义的 provider 会自动添加到账号中执行（在账号配置中没有使用自定义 provider 情况下, 详见 [PROVIDERS.json](./PROVIDERS.json)）。
 
 
 #### 3.5 代理配置
